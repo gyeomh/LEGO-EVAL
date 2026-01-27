@@ -1,7 +1,7 @@
 # LEGO-Eval: Towards Fine-Grained Evaluation on Synthesizing 3D Embodied Environments with Tool Augmentation
 LEGO-Eval is a **tool-augmented evaluation framework** for text-guided 3D scene synthesis. It enables fine-grained and interpretable assessment of instruction-scene alignment by grounding scene components using a diverse suite of 21 multimodal tools, supporting multi-hop reasoning over spatial and attribute constraints.
 
-![Framework Overview](images/Overview.png)
+![Framework Overview](etc/Overview.png)
 
 ## Overview
 Recently, there has been notable progress in text-guided 3D scene synthesis using large language models (LLMs). However, evaluating the alignment between textual instructions and the resulting 3D scenes remains a challenging problem, as existing approaches often lack a deep understanding of 3D spatial structures, limiting their reliability. To address this limitation, we introduce:
@@ -15,7 +15,7 @@ Recently, there has been notable progress in text-guided 3D scene synthesis usin
 
 ### 1-1. Build Docker File
 ```bash
-cd LEGO_Eval/setup/docker
+cd LEGO-EVAL/setup/docker
 docker build -t [your_image_name]:[tag] .
 ```
 
@@ -44,7 +44,7 @@ docker run -it --privileged \
 ### 1-3. Start Xorg
 ```bash
 # Inside the Docker container
-cd /mount/workspace/LEGO_Eval/setup
+cd /mount/workspace/LEGO-EVAL/setup
 tmux new -s xorg_start
 python startx.py <SCREEN_NUMBER>  # X screen number (GPU ID (e.g., 0))
 
@@ -103,7 +103,7 @@ Please download the pre-captured asset images hosted on
 ## 3. Scene Preprocess
 
 ### 3-1. Scene Json File Format
-Ensure that all scene JSON files follow the [specified format](<LINK_TO_FORMAT>).
+Ensure that all scene JSON files follow the [specified format](etc/FORMAT.md).
 
 ### 3-2. Preprocess
 During preprocessing, images of scenes are captured in advance, enabling efficient evaluation.

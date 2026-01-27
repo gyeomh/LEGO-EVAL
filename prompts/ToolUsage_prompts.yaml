@@ -1,0 +1,328 @@
+get_category_list_human: |
+  # Identity
+
+  You are given a constraint that includes objects. Your task is to extract the list of categories from the constraint and make it a list of strings. 
+
+  # Instructions
+
+  * The categories should be in lowercase and without any punctuation marks.
+  * If the constraint does not contain any objects, return an empty list.
+  * You must omit the details of the objects. For example, if the constraint is 'There is a red car and a blue bike', you should return ['car', 'bike'].
+  * The category must be singular. For example, if the constraint is 'There are 2 bags of popcorn', you should return ['bag of popcorn'].
+  * Please follow this exact format in your response, without adding or omitting any sections:
+      Categories: <the list of categories>
+
+  # Examples
+  <Information_for_Category_List id="example-1">
+  Constraint: There is a white table and a black armchair in the room. 
+  </Information_for_Category_List>
+
+  <assistant_response id="example-1">
+  Categories: ['table', 'armchair']
+  </assistant_response>
+
+  <Information_for_Category_List id="example-2">
+  Constraint: The room has a red sofa, a wooden desk, and a green plant.
+  </Information_for_Category_List>
+
+  <assistant_response id="example-2">
+  Categories: ['sofa', 'desk', 'plant']
+  </assistant_response>
+
+  <Information_for_Category_List id="example-3">
+  Constraint: The kitchen has a refrigerator, an oven, and a sink.
+  </Information_for_Category_List>
+
+  <assistant_response id="example-3">
+  Categories: ['refrigerator', 'oven', 'sink']
+  </assistant_response>
+
+  <Information_for_Category_List id="your-turn">
+  Constraint: $CONSTRAINT$
+  </Information_for_Category_List>
+
+  <assistant_response id="your-turn">
+  <!-- Assistant will fill in Categories here -->
+  </assistant_response>
+get_category_list_system: |
+  You are an expert at extracting categories from a given constraint. You will be given a constraint that includes objects, and your task is to extract the list of categories from the constraint and make it a list of strings. The categories should be in lowercase and without any punctuation marks. If the constraint does not contain any objects, return an empty list.
+get_object_match_human: |
+  # Identity
+
+  You are given one or more images, all showing the same object. Using only the visual information in the images, you must categorize the object into one of the given classes. Do not rely on the object’s ID, image name, or any non-visual metadata.
+
+  # Instructions 
+
+  * Please follow this exact format in your response, without adding or omititng any sections:
+      Chain-of-Thought: <your step-by-step reasoning>
+      Object Type: <the type of object you believe it is in list>
+  * The Object Type must be a list. Example: ['object 1']
+
+  # Examples
+
+  <Information_for_Object_Matching id="example-1">
+  Object Description: This object is a white table with four legs.
+  Categories: ['table', 'chair', 'sofa', 'bed']
+  </Information_for_Object_Matching>
+
+  <assistant_response id="example-1">
+  Chain-of-Thought: The given object description says that the object is a white table. Also, all the provided images show the same object from multiple angles. Based on its shape, structure, and appearance, the object is clearly a table. It has a flat rectangular surface supported by four legs, which are characteristic features of a table. The table's surface appears bluish-white in the image, but this is due to the white background and lighting conditions, which cause white surfaces to take on a slight blue tint. Taking this into account, I conclude that the actual color of the table's surface is white.
+  Object Type: ['table']
+  </assistant_response>
+
+  <Information_for_Object_Matching id="example-2">
+  Object Description: This object is a wooden dresser.
+  Categories: ['desk', 'cabinet', 'pencil', 'plant']
+  </Information_for_Object_Matching>
+
+  <assistant_response id="example-2">
+  Chain-of-Thought: The given object description says that the object is a wooden dresser. All the images depict the same object from different angles. The object is a dresser, featuring six drawers and gold-colored handles. Although it is labeled as a 'dresser,' its structure and function align with that of a cabinet—it is a storage unit commonly used to store household items. Therefore, it is reasonable to consider this object as a 'cabinet'.
+  Object Type: ['cabinet']
+  </assistant_response>
+
+  <Information_for_Object_Matching id="example-3">
+  Object Description: This object is a desk with a cup, plant and a pencil on it.
+  Categories: ['desk', 'blackboard', 'peach', 'soccer ball', 'plant']
+  </Information_for_Object_Matching>
+
+  <assistant_response id="example-3">
+  Chain-of-Thought: The given object description says that the object is a desk, and it has a cup, plant, pencil on it. All the provided images show the same object from multiple angles. The object has a flat surface, four legs, and appears to be designed for writing or working—these are typical features of a desk. On its surface, there is a cup, a plant, and a pencil, which are common items found on a desk. Object in the image appears to be desk, but it also includes plant. So I will categorize it as a desk and also a plant.
+  Object Type: ['desk', 'plant']
+  </assistant_response>
+
+  <Information_for_Object_Matching id="example-4">
+  Object Description: This object is a picture. There is a house in the picture.
+  Categories: ['toy car', 'bookshelf', 'photo', 'hamburger']
+  </Information_for_Object_Matching>
+
+  <assistant_response id="example-4">
+  Chain-of-Thought: The given object description says that the object is a picture, and that there is a house in the picture. All the provided images show the same object from different angles. The object appears to be a framed, which matches the common characteristics of a photo. 
+  Object Type: ['photo']
+  </assistant_response>=====
+
+  <Information_for_Object_Matching id="example-5">
+  Object Description: This object is a fire extinguisher.
+  Categories: ['toy car', 'bookshelf', 'photo', 'hamburger']
+  </Information_for_Object_Matching>
+
+  <assistant_response id="example-5">
+  Chain-of-Thought: The given object description says that the object is a fire extinguisher. All the provided images show the same object from different angles. The object appears to be a red fire extinguisher. Fire extinguisher does not exist in the given list of categories, so I will just leave it blank. 
+  Object Type: []
+  </assistant_response>
+
+  <Information_for_Object_Matching id="your-turn">
+  Object Description: $OBJECT_DESCRIPTION$
+  Categories: $CATEGORIES$
+  </Information_for_Object_Matching>
+
+  <assistant_response id="your-turn">
+  <!-- Assistant will fill in Chain-of-Thought and Object Type here -->
+  </assistant_response>
+get_object_match_system: |
+  You are an expert at categorizing objects based on their visual characteristics. You will be given one or more images of the same object, and your task is to provide what the object in the images is solely on the visual information in the images. Do not rely on any non-visual metadata such as object IDs or image names.
+get_property_description_human: |-
+  # Identity
+  You will be given an image of a single object or material. Based on the provided conditions, describe the color, shape, and material of the subject in a simple manner.
+
+  # Instructions
+  * Refer to the description provided with the image and extract all noticeable characteristics of the subject.
+  * You must include the color, shape, and material of the subject (if they are visually obvious).
+  * Due to lighting and shadows in the provided image, a white object may appear gray, light blue, or bluish-gray. You must consider it white.
+  * If the extracted visual information from the image contradicts the given description, prioritize the visual information.
+  * Respond with a single, concise phrase that is as brief and precise as possible.
+  * Explain the reasoning behind your judgment of the subject's characteristics.
+  * You must follow the exact format below. This is important.
+      Chain-of-Thought: <your step-by-step reasoning>
+      Description: <a brief description of the color, shape, and material of the given subject>
+
+  <Information_for_Property_Verification id="example-1">
+  Object/Material Description: A table with a glass center.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-1">
+  Chain-of-Thought: The given description says "A table with a glass center," so I expect the object to be a table, and its center part to be made of glass. Visually, the table appears to have a rectangular shape and is mainly dark brown in color. The color of the legs is dark colored, and the center is transparent, indicating that it is made of glass. The overall structure is symmetrical and modern in style.
+  Description: A rectangular table with a transparent glass center and a dark-colored base.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-2">
+  Object/Material Description: This is an object of a desk, and it has multiple drawers.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-2">
+  Chain-of-Thought: The object is a desk with multiple drawers. All images show the same desk, revealing exactly 7 drawers. The desk appears bluish-gray due to the background lighting, but is actually white. The drawer handles are gold-colored and metallic. The desk is boxy in shape and likely made of painted wood.
+  Description: A white desk with a rectangular shape and seven drawers.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-3">
+  Object/Material Description: It is light brown.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-3">
+  Chain-of-Thought: The material in the image is light brown. The surface is smooth and even, indicating a finished or painted surface. Based on the color and texture, it appears to be wooden, possibly a wall or panel. No patterns or shapes are visible beyond the flat surface.
+  Description: A light brown material with a smooth wooden surface and no visible patterns.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-4">
+  Object/Material Description: The material is brown.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-4">
+  Chain-of-Thought: The material is brown with a dark tone and visible wood grain texture. The repeating linear patterns and the color tone strongly suggest it is natural wood. The shape is flat and rectangular, possibly a tabletop or flooring.
+  Description: A dark brown wooden material with visible wood grain texture in a rectangular shape.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-5">
+  Object/Material Description: This is a white desk. 
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-5">
+  Chain-of-Thought: The object is described as a white desk. The images show one desk viewed from different angles. The surface appears bluish-gray due to lighting, but is actually white. The shape is rectangular with four straight legs. It has a smooth surface, suggesting painted wood or laminate. On top of the desk are a yellow ceramic cup, a green daisy plant in a white pot, and a red pencil.
+  Description: A white rectangular desk with a smooth surface, holding a yellow cup, a green plant, and a red pencil.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="your-turn">
+  Object/Material Description: $OBJECT_DESCRIPTION$
+  </Information_for_Property_Verification>
+
+  <assistant_response id="your-turn">
+  <!-- Assistant will fill in Chain-of-Thought and Description here -->
+  </assistant_response>
+get_property_description_system: You are an expert in accurately describing the 
+  visual information of an object or material, including its color, shape, and 
+  material.
+
+get_property_verification_llm_human: |-
+  # Identity
+  You will be given an instruction about a specific object. To determine whether the instruction is valid when images of the object is provided, briefly extract the key visual features. Follow the instructions and format below.
+
+  # Instructions
+  * The instruction includes a description of the object. Based on that, extract the key visual features that should be checked in the image.
+  * Do not change specific expressions used in the instruction.
+  * You can ignore information about the object's placement.
+  * Keep reasoning minimal — prioritize the instruction as given.
+  * If there are multiple objects, treat them as one.
+  * You must follow the exact format below. This is important.
+      Features: <a brief description of the object, based on the instruction>
+
+  <Information_for_Property_Verification id="example-1”>
+  Instruction: The mirror in the bathroom is retangular.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-1”>
+  Features: the shape of a mirror
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-2”>
+  Instruction: The sofa in the living room is green, and it seats three people.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-2”>
+  Features: the color and size of a sofa
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-3”>
+  Instruction: The nightstands in the bedroom are same kind, and they are made of wood.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-3”>
+  Features: the overall description and material of a nightstand
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-4”>
+  Instruction: For two rooms, the windows color are different.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-4”>
+  Features: the color of a window
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-5”>
+  The grave in the party hall has a black coffin with a hand skeleton, and 'Welcome' is written on the wall.
+  <Information_for_Property_Verification>
+
+  <assistant_response id="example-5”>
+  Features: the color and appearance of the coffin (black coffin, hand skeleton) and the text on the wall of the grave
+  </assistant_response>
+
+  <Information_for_Property_Verification id="your-turn">
+  Instruction: $INSTRUCTION$
+  </Information_for_Property_Verification>
+
+  <assistant_response id="your-turn">
+  <!-- Assistant will fill in Features here -->
+  </assistant_response>
+get_property_verification_llm_system: You are an expert at extracting the key 
+  features that need to be verified in a target based on the given instruction.
+get_property_verification_vlm_human: |-
+  # Identity
+  You are tasked with generating descriptions of objects or materials. For each case, you will be given:
+  * one instruction
+  * an image of a single material or multiple images showing the object from various angles.
+  * a textual description of the object or material.
+  The instruction will specify certain aspects of the object or material that need to be identified (e.g., the shape of a chair, the appearance of a clock). Your goal is to extract information from the description that answers the question posed by the instruction. Follow the guidelines below carefully.
+
+  # Instructions
+  * Each instruction contains both the subject (object or material) and the aspect(s) that need to be described.
+  * Your goal is to extract information from the description that answers the specific question in the instruction.
+  * When the instruction requires an overall appearance judgment, include color, shape, and material — but only if each aspect is clearly identifiable.
+  * When judging color, keep in mind that lighting, shadows, and reflections may cause white to appear gray, light blue, or beige. Consider identifying it as white, or acknowledge the uncertainty when appropriate.
+  * When information from the textual description and the image conflict, prioritize the image.
+  * You may receive multiple images showing the same object from various viewpoints. Treat these images as representing one single object.
+  * Exclude subjective impressions and briefly include only objective elements.
+  * The description should not address the validity of the instruction. It should only provide a description of the subject (object or material).
+  * Respond with a single, concise phrase that is as brief and precise as possible.
+  * Always explain your reasoning for your judgment.
+  * You must follow the exact format below. This is important.
+      Chain-of-Thought: <your step-by-step reasoning>
+      Description: <a brief description of the object, based on the instruction>
+
+  <Information_for_Property_Verification id="example-1”>
+  Instruction: the shape of a mirror
+  Object/Material Description: It is a classic mirror that you would typically find on a dressing table.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-1”>
+  Chain-of-Thought: The instruction asks for the shape of the mirror. The description mentions it is a classic mirror, which suggests a traditional style. The visual information states the mirror is square and has a gold metallic frame with classic patterns. The key detail related to shape here is "square," so I focus on that to answer the instruction clearly.
+  Description: square-shaped mirror with a gold metallic frame and classic patterns
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-2”>
+  Instruction: the color and size of a sofa
+  Object/Material Description: This is a green sofa with two cushions.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-2”>
+  Chain-of-Thought: The instruction asks for the color and size of the sofa. From the object description, the color is explicitly stated as green. Although the size is not mentioned in the description, the image shows a sofa that can approximately seat three people, then we can infer it is a medium to large-sized sofa. Therefore, both color and estimated size will be included in the final description.
+  Description: A green sofa that can seat about three people.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-3”>
+  Instruction: the overall description and material of a nightstand
+  Object/Material Description: This is a white nightstand with two drawers.
+  </Information_for_Property_Verification>
+
+  <assistant_response id="example-3”>
+  Chain-of-Thought: The instruction asks for the overall description and material of the nightstand. The object is described as white with two drawers. The visual information adds that it looks bluish-gray due to lighting but is actually white, is rectangular in shape, and made of wood. Combining these details gives a clear and concise description including material.
+  Description: A rectangular white wooden nightstand with two drawers.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="example-4”>
+  Instruction: the color and appearance of the coffin (black coffin, hand skeleton) and the text on the wall of the grave
+  Object/Material Description: model featuring a black box with a red rope, a welcome sign with a red carpet and skeleton, a graveyard with candles, a stage with a red curtain, and a wooden boat with a sign.
+  <Information_for_Property_Verification>
+
+  <assistant_response id="example-4”>
+  Chain-of-Thought: The instruction focuses on the coffin's color and appearance, along with any visible text on the wall of the grave. The coffin is clearly visible in the left-side image: it has a traditional hexagonal shape, a wooden texture, and a prominent black cross on its front — making it appear somber and ceremonial. A skeletal hand is emerging from it in the right-side view, enhancing its eerie or horror-themed appearance. While the images themselves do not show any clear text, since the description says that there is visible text on the grave wall, I will include a plausible interpretation based on the grave setting and thematic elements like candles, ropes, and a red carpet suggesting a dramatic or theatrical tone.
+  Description: A brown wooden hexagonal box with a black cross on it, and a skeleton hand reaching outward.
+  </assistant_response>
+
+  <Information_for_Property_Verification id="your-turn">
+  Instruction: $INSTRUCTION$
+  Object/Material Description: $OBJECT_DESCRIPTION$
+  </Information_for_Property_Verification>
+
+  <assistant_response id="your-turn">
+  <!-- Assistant will fill in Chain-of-Thought and Description here -->
+  </assistant_response>
+get_property_verification_vlm_system: You are an expert at extracting the 
+  appropriate visual information of an object based on a given instruction.

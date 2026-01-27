@@ -1,0 +1,123 @@
+System: |-
+  You are an expert of extracting constraints from the given instruction.
+User: |-
+  ## Identity
+  Your task is to decompose a given instruction into a list of constraints. These constraints are decomposed for the purpose of validation. Hence, you must consider the order of constraints. Also, you must only contain one of the four attributes in each constraint.
+
+  ## Attributes:
+  1. Floor Layout: spatial structure and room-to-room or door/window placement (e.g., room existence, connections, relative size, or doorway/window layout)
+  2. Material Selection: materials, textures, and colors of walls, floors, or ceilings
+  3. Object Selection: object attributes such as color, shape, size, or style (not position)
+  4. Object Placement: spatial relationships and placement of objects within rooms or relative to each other
+
+  ## Rules:
+  1. List all constraints present in the instruction, including implied ones.
+    - Example: "There is one wall that has windows. The wall that has windows is yellow."
+      → (1) There is one wall that has windows.
+      → (2) The wall that has windows is yellow.
+
+  2. If a constraint is only valid under the existence of a specific object or space, express it as a condition or within its context.
+    - Example: "There is a room with red floor. In that room, there is a white bed."
+      → (1) There is a room with red floor. 
+      → (2) In the room with red floor, there is a white bed.
+
+  3. Merge multiple attributes describing the same object or space into one constraint.
+    - Example: "The three walls are yellow. The three walls have patterns."
+      → (1) The three walls in the bedroom are yellow and have patterns.
+    
+    - Example: "The table is large. The table is red."
+      → (1) The table is large and red.
+
+  4. Group mentions of rooms into one unified constraint.
+    - Example: "There is bedroom and bathroom in the house. There is living room in the house."
+      → (1) There is bedroom, bathroom, and one living room in the house.
+
+  5. Group mentions of existence of objects that are in the identical room into one unified constraint.
+    - Example: "In the bedroom, there is a bed. In that room, there is also a table."
+      → (1) In the bedroom, there is a bed and a table.
+
+  6. If an object (door, window, wall, objects, etc) exists in the constraint, its location must be explicitly specified.
+  - Example: "There is bedroom in the house. The wall is white. There a toy car in the bedroom. The car is big."
+    → (1) There is bedroom in the house.
+    → (2) The wall in the bedroom is white.
+    → (3) There a toy car in the bedroom.
+    → (4) The car in the bedroom is big.
+
+  7. You should remember that there are four types of constraint's attributes. If a sentence contains two or more different types, each type must be separated into its own constraint.
+  - Example: "The bed in the bedroom is king-sized and attached to the wall of the bedroom."
+    → (1) The bed in the bedroom is king sized.
+    → (2) The bed in the bedroom is attached to the wall of the bedroom.
+
+  7-1. Do not combine the existence of windows and other objects in the same room into a single constraint. Existence of windows is Floor Layout, and Existence of other objects is Object Placement.
+  - Example: "The room has a window. The room has a desk and a chair."
+    → (1) The room has a window.
+    → (2) The room has a desk and a chair.
+
+  8. Do not create constraints for the mere existence of walls or a floor. The existence of walls and a floor is assumed for any room. Only create constraints for specific materials, textures, and colors of walls or a floor
+  - Example: "The room has black walls and a beige wooden floor."
+    → (X)(Do NOT Create) The room has walls and a floor.
+    → (X)(Do NOT Create) The room has walls.
+    → (X)(Do NOT Create) The room has a floor.
+    → (O)(Create like this) The room has black walls and a beige wooden floor.
+
+  ## Example 1:
+  Instruction:
+  There is a bedroom and a studyroom in the scene. The bedroom's walls and studyroom's walls are the same color. The bedroom has a bed and a desk. The bed is large. The bed's headboard is white.
+
+  Constraints:
+  1. There is a bedroom and a studyroom in the scene. 
+  2. The bedroom's walls and the studyroom's walls are the same color. 
+  3. The bedroom has a bed and a desk.
+  4. The bed in the bedroom is large, and its headboard is white.
+
+  ## Example 2:
+  Instruction:
+  There is a kitchen that has a marble countertop and wooden cabinets. Next to the kitchen, there is a dining area with a round table. The table has four chairs around it. The chairs are tall. They are also blue.
+
+  Constraints:
+  1. There is a kitchen and a dining area in the house. 
+  2. In the kitchen, there is a countertop and cabinets. 
+  3. Next to the kitchen, there is a dining area. 
+  4. In the dining area, there is one table and four chairs.
+  5.The table in the dining area is round. 
+  6. The chairs in the dining area are placed around the table. 
+  7. The chairs in the dining area surrounding the table are tall and blue.
+
+  ## Example 3:
+  Instruction:
+  A living room has two large windows and a gray sofa. A small table is placed in front of the sofa. The table is white. On the table, there is a vase filled with white flowers.
+
+  Constraints:
+  1. There is a living room. 
+  2. The living room has two windows. 
+  3. The two windows in the living room are large. 
+  4. There is a sofa, a table, and a vase, and flowers in the living room. 
+  5. The sofa in the living room is gray. 
+  6. The table in the living room is small and white.
+  7. The flowers in the living room are white.
+  8. The flowers in the living room are in a vase.
+
+  ## Example 4:
+  Instruction:
+  There is a living room and a bathroom in the house. There are only those two rooms. The living room has a large window, a gray sofa, and a small table. The sofa also has check patterns. The bathroom's walls are all white.
+  
+  Constraints:
+  1. There is a living room and a bathroom in the house. There are only those two rooms. 
+  2. The living room has a window. 
+  3. The window in the living room is large. 
+  4. The living room has a sofa and a table. 
+  5. The sofa in the living room is gray with check patterns. 
+  6. The table in the living room is small. 
+  7. The bathroom's walls are all white. 
+
+  ## Input:
+  Instruction:
+  {instruction}
+
+  ## Output:
+  Constraints:
+  1. <constraint 1>
+  2. <constraint 2>
+  ...
+  n. <constraint n>
+  

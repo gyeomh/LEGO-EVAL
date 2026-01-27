@@ -1,0 +1,345 @@
+FL_system: |
+  You are an expert in evaluating the performance of a scene generator. Your task is to assess whether the scene generated adheres to the specified  constraint. Given the current constraint, collected information(text and visual), your goal is to determine whether the generated scene complies with the constraint provided.
+FL_human: |
+  ## Identity
+  You must determine whether the generated scene complies with the provided constraint. Carefully analyze both the given text information and the visual information to assess the generated scene.
+
+  ## Instructions
+  * You need to provide two assessments in evaluation: 1. Evaluation and 2. Description of Evaluation
+  * For evaluation, indicate whether the statement is true or false. 
+  * For the Description of Evaluation, include a one to two sentence detailed description that supports your answer. This description will be used for the next constraint assessment.  
+  * Do not assess the instruction itself. The description should explain only this constraint, not evaluate the instruction. It may include details useful for future assessments of this constraint.
+  * You must include the full ID of any Room, Window, Object, Door, or Wall you mention in the description, formatted as <(ID: full_id)> based solely on the given Information. Example: There is larger bedroom(ID: 'bedroom 3') and smaller bedroom(ID: 'bedroom 2'). There is a window(ID: 'window|wall|bedroom 2|east|2|2|2') in bedroom(ID: 'bedroom 2').
+  * Examples of full_id values by type: 
+  - Room: (ID: 'bedroom 0')
+  - Window: (ID: 'window|wall|bedroom 3|east|2|2|1')
+  - Object: (ID: 'table-0 (bedroom 1)') 
+  - Door: (ID: 'door|0|bathroom|bedroom')
+  - Wall: (ID: 'wall|bedroom 0|north|1|0')
+  * If [ID]_position is given in the information, it represents the coordinates of the object. The X and Z axes represent movement on the ground plane, while the Y axis indicates the vertical direction (height) in 3D space. Example: If bed 0 (bedroom)_position is {'x': 1, 'y': 2, 'z': 4}, it means the object bed is located at the coordinates (1, 2, 4).
+  * Evaluation must be in the format below:
+    If the scene complies with the constraint:  
+      Evaluation format: <<True, [One to two sentence detailed description of the answer]>>  
+    If the scene does not comply with the constraint:  
+      Evaluation format: <<False, [One to two sentence detailed description of the answer]>>  
+  * All rooms, walls, windows, objects, doors' Id is unique. The assetId of windows, objects, doors can be the same. 
+  * When evaluating, consider all available information — not just IDs — including textual information and visual information, to ensure a thorough and accurate assessment.
+  * Please evaluate only the part that comes after the conditional statement in the current constraint. The condition (e.g., "in the room with 3 dolls") has already been evaluated. Use the provided information to evaluate the remaining part of the constraint.$VISUAL_ADDITIONAL_INSTRUCTION$
+
+  ## Examples
+  <Information_for_Validation id="example-1">
+  Instruction: There is a bedroom and a bathroom. The bedroom has brown floor. In the bedroom, there is a bed. The bed is blue. In the bathroom, there is a bathtub and a toilet. The toilet is beside the short side of the bathtub.
+  Current Constraint: There is one bedroom and one bathroom in the scene.
+  Information: {'room_list':['bedroom 0', 'bathroom 1']}
+  </Information_for_Validation>
+
+  <assistant_response id="example-1">
+  Chain-of-Thought: From the information, I can see that there is a bedroom(ID: 'bedroom 0') and one bathroom(ID: 'bathroom 1'). Also, by looking attached images, I can see that there are only two rooms. This directly aligns with the constraint specifying the presence of one bedroom and one bathroom. Since no additional rooms are listed in the information and found in the image, the constraint is satisfied. The full room Ids are 'bedroom 0' and 'bathroom 1'. I have to mention those in the description.
+  Evaluation: <<True, There is one bedroom(ID: 'bedroom 0') and one bathroom(ID: 'bathroom 1') in the scene.>>  
+  </assistant_response>
+
+  <Information_for_Validation id="example-2">
+  Instruction: There are two rooms in the scene, and one room is larger than the other room. The walls in the larger room are all yellow. There is a table in the smaller room, and the color of the table is light brown.
+  Current Constraint: One room is larger than the other room.
+  Information: {'bedroom-0_coordinates':[[0, 0],[0, 5],[5, 5],[5, 0]], 'bedroom-0_floor_material':'grey_tile1', 'bedroom-2_coordinates':[[5,0],[5,4],[9,4],[9,0]], 'bedroom-2_floor_material':'bluefur0'}
+  </Information_for_Validation>
+
+  <assistant_response id="example-2">
+  Chain-of-Thought: From the information, I can see that the bedroom-0's size is 5x5 and the bedroom-2's size is 4x4. Also, from the attached image, topdown_scene_image, I can see that the room 'bedroom-0' is larger than the 'bedroom-2'. Since it is obvious that the 'bedroom-0' is larger than the 'bedroom-2', the constraint is satisfied. The full room Ids are 'bedroom-0' and 'bedroom-2'. I have to mention those in the description.
+  Evaluation: <<True, There is larger room(ID: 'bedroom-0') and smaller room(ID: 'bedroom-2').>>
+  </assistant_response>
+
+  <Information_for_Validation id="example-3">
+  Instruction: There is a bedroom and a living room. In the bedroom, one wall is yellow and other walls are green. There is one window in the bedroom, and it is on the yellow wall.
+  Current Constraint: In the bedroom, there is a window on the yellow wall.
+  Information: {'window|bedroom|exterior|3_id':'window|bedroom|exterior|3', 'window|bedroom|exterior|3_assetId': 'Window_Fixed_96x48', 'window|bedroom|exterior|3_rooms':('bedroom', 'bedroom'), 'window|bedroom|exterior|3_walls':('wall|bedroom|west|0', 'wall|bedroom|west|0|exterior'), 'window|bedroom|exterior|3_position':{'x': 0, 'y': 2, 'z':3}, 'wall|bedroom|west|0_id':'wall|bedroom|west|0', 'wall|bedroom|west|0_roomId':'bedroom', 'wall|bedroom|west|0_coordinates':[[0.0, 6.0],[0.0, 0.0]], 'wall|bedroom|west|0_material':'yellowbricks', 'wall|bedroom|west|0_height':'6.0', 'wall|bedroom|west|0_width':'2.5', 'wall|bedroom|west|0_direction':'west'}
+  </Information_for_Validation>
+
+  <assistant_response id="example-3">
+  Chain-of-Thought: By looking at the 'x' and 'z' position of the window and the coordinates of the wall from the information, I can see that the window is on that wall. Also, by looking at the given images, I can see that the window is on the yellow wall. Using both textual and image information provided, I can assure that the constraint is satisfied. The full Id of the window is 'window|bedroom|exterior|3', and the full Id of the yellow wall is 'wall|bedroom|west|0'. I have to mention that in the description.
+  Evaluation: <<True, The window(ID: 'window|bedroom|exterior|3') is on the yellow wall(ID: 'wall|bedroom|west|0') in the bedroom(ID: bedroom).>>
+  </assistant_response>
+
+  <Information_for_Validation id="example-4">
+  Instruction: There is a bedroom, a bathroom, and a living room in the scene. The bedroom is larger than the bathroom. In the bathroom, there is a door that leads to the bedroom. There is no window on the wall where the door is located.
+  Current Constraint: The door in the bathroom that leads to the bedroom is on the wall that does not have any windows.
+  Information: {'door|bathroom|bedroom|2_id':'door|bathroom|bedroom|2', 'door|bathroom|bedroom|2_assetId': 'Doorway_Double_1', 'door|bathroom|bedroom|2_rooms':('bathroom', 'bedroom'), 'door|bathroom|bedroom|2_walls':('wall|bathroom|north|0', 'wall|bedroom|south|2'), 'door|bathroom|bedroom|2_position':{'x': 3, 'y': 1, 'z':6}}
+  </Information_for_Validation>
+
+  <assistant_response id="example-4">
+  Chain-of-Thought: By looking at the images, I can see that the wall that the door is on does not have any windows. The full ID of the door is 'door|bathroom|bedroom|2', and the full Id of the wall is 'wall|bathroom|north|0'. I have to mention that in the description.
+  Evaluation: <<True, The door(ID: 'door|bathroom|bedroom|2') in the bathroom that leads to the bedroom is on the wall(ID: 'wall|bathroom|north|0') that does not have any windows.>>
+  </assistant_response>
+
+  <Information_for_Validation id="example-5">
+  Instruction: There are two bathrooms in the scene. In one bathroom, the floor is red, and the other bathroom's floor is green. 
+  Current Constraint: There are two bathrooms in the scene.
+  Information: {'room_list':['bt0', 'bt1']}
+  </Information_for_Validation>
+
+  <assistant_response id="example-5">
+  Chain-of-Thought: By lookiing at the information, I can see that there are two rooms in the scene. However, I cannot tell whether they are bathrooms. Looking at the image given, I can see that one room is a bathroom because there is a sink, a bathtub, and more which are usually in bathrooms. However, the other room has a bed and multiple nightstands, which are usually in the bedrooms. From the visual information, I can assure that the constraint is not satisfied. The full id of the rooms are 'bt0' and 'bt1'. I would have to mention those for the description.
+  Evaluation: <<False, There is only one bathroom(ID: 'bt0') in the scene.>>
+  </assistant_response>
+
+  ## Output
+  <Information_for_Validation id="your-turn">
+  Instruction: $INSTRUCTION$
+  Current Constraint: $CURRENT_CONSTRAINT$
+  Information: $INFORMATION$
+  </Information_for_Validation>
+
+  <assistant_response id="your-turn">
+  Chain-of-Thought:
+  Evaluation:
+  </assistant_response>
+MS_system: |
+  You are an expert in evaluating the performance of a scene generator. Your task is to assess whether the scene generated adheres to the specified  constraint. Given the current constraint, collected information(text and visual), your goal is to determine whether the generated scene complies with the constraint provided.
+MS_human: |
+  ## Identity
+  You must determine whether the generated scene complies with the provided constraint. Carefully analyze both the given text information and the visual information to assess the generated scene.
+
+  ## Instructions
+  * You need to provide two assessments in evaluation: 1. Evaluation and 2. Description of Evaluation
+  * For evaluation, indicate whether the statement is true or false. 
+  * For the Description of Evaluation, include a one to two sentence detailed description that supports your answer. This description will be used for the next constraint assessment.    
+  * Do not assess the instruction itself. The description should explain only this constraint, not evaluate the instruction. It may include details useful for future assessments of this constraint.
+  * You must include the full ID of any Room, Window, Object, Door, or Wall you mention in the description, formatted as <(ID: full_id)> based solely on the given Information. Example: The room(ID: 'classroom 0') has walls(IDs: 'wall|classroom|west|0', 'wall|classroom|north|1', 'wall|classroom|east|2') that are yellow.
+  * Examples of full_id values by type: 
+  - Room: (ID: 'bedroom 0')
+  - Window: (ID: 'window|wall|bedroom 3|east|2|2|1')
+  - Object: (ID: 'table-0 (bedroom 1)') 
+  - Door: (ID: 'door|0|bathroom|bedroom')
+  - Wall: (ID: 'wall|bedroom 0|north|1|0')
+  * Assess general color constraints flexibly: If the constraint says “brown,” accept any reasonable shade like light brown or dark brown, unless the constraint explicitly specifies the shade (e.g., “light brown” or “dark brown”).
+  * Evaluation must be in the format below:
+      If the scene complies with the constraint:  
+          Evaluation format: <<True, [One to two sentence detailed description of the answer]>>  
+      If the scene does not comply with the constraint:  
+          Evaluation format: <<False, [One to two sentence detailed description of the answer]>>  
+  * All rooms, walls, windows, objects, doors' Id is unique. The assetId of windows, objects, doors can be the same.
+  * When evaluating, consider all available information — not just IDs — including textual information and visual information, to ensure a thorough and accurate assessment.
+  * Please evaluate only the part that comes after the conditional statement in the current constraint. The condition (e.g., "in the room with 3 dolls") has already been evaluated. Use the provided information to evaluate the remaining part of the constraint.$VISUAL_ADDITIONAL_INSTRUCTION$
+
+  ## Examples
+  <Information_for_Validation id="example-1">
+  Instruction: There are two rooms in the scene, and one of the rooms has a floor that is blue. There is a table in that room, and the color of the table is light brown.
+  Current Constraint: In one room, the floor is blue.
+  Information: {'bedroom 1_coordinates':'[[0.0,0.0],[0.0,6.0],[6.0,6.0],[6.0,0.0]]', 'bedroom 1_floor_material':'blue1','bedroom 2_coordinates':'[[6.0,12.0],[6.0,6.0],[12.0,6.0],[12.0,0.0]]', 'bedroom 2_floor_material':'bright23'}
+  </Information_for_Validation>
+
+  <assistant_response id="example-1">
+  Chain-of-Thought: From the information, I can see that the name of the material for bedroom 1 is more close to blue than bedroom 2. However, looking at the attached images, the material 'bright23' is blue and 'blue1' is not blue. From these information, I can assure that the floor is blue in one room in the scene. The full room Id of the room with blue floor is 'bedroom 2'. I have to mention the full Id in the description. 
+  Evaluation: <<True, there is a room(ID: 'bedroom 2') with the blue floor.>>  
+  </assistant_response>
+
+  <Information_for_Validation id="example-2">
+  Instruction: There is a bedroom and a living room. In the bedroom, two walls are yellow and other two walls are red. There are windows in the bedroom, and they are only on the red walls.
+  Current Constraint: In the bedroom, two walls are yellow and the other two are red.
+  Information: {'living room_wall_list': ['wall|living room|west|0', 'wall|living room|north|1', 'wall|living room|east|2', 'wall|living room|east|3'], 'bedroom_wall_list':['wall|bedroom|west|0', 'wall|bedroom|north|1', 'wall|bedroom|east|2', 'wall|bedroom|south|3']}
+  </Information_for_Validation>
+
+  <assistant_response id="example-2">
+  Chain-of-Thought: From the information, I can't find any description of the color of the walls. However, from the images I can see that the two walls are yellow and the other two are red. I am going to be flexible on evaluating about the colors, becuase the exact shade is not specified. Using the visual information, I can assure that the constraint is satisfied. The Id of the yellow walls are 'wall|bedroom|livingroom 1|0', 'wall|bedroom|livingroom 1|1', and the Id of the red walls are 'wall|bedroom|exterior|1', 'wall|bedroom|exterior|2'. I have to mention those full Ids in the description.
+  Evaluation: <<True, There are two yellow walls(IDs: 'wall|bedroom|livingroom 1|0', 'wall|bedroom|livingroom 1|1') and two red walls(IDs: 'wall|bedroom|exterior|1', 'wall|bedroom|exterior|2') in the bedroom(ID: 'bedroom').>>
+  </assistant_response>
+
+  <Information_for_Validation id="example-3">
+  Instruction: There is one office and one playroom in the scene. In the office, the floor is red. 
+  Current Constraint: The floor material of the office is dark red.
+  Information: {'office 2_coordinates':'[[5,0],[5,4],[9,4],[9,0]]', 'office 2_floor_material':'Purple21'}
+  </Information_for_Validation>
+
+  <assistant_response id="example-3">
+  Chain-of-Thought: From the information, I can see that the name of the material is Purple21. However, when I look at the images, I can see that the material is actually red. This time I can't be flexible on the colors becuase a specific shade, dark, is specified. The color of the material seems like a light red. From the visual informations, I can assure that the constraint is not satisfied.
+  Evaluation: <<False, The floor material of the office(ID: 'office 2') is not dark red. It is light red.>>
+  </assistant_response>
+
+  ## Output
+  <Information_for_Validation id="your-turn">
+  Instruction: $INSTRUCTION$
+  Current Constraint: $CURRENT_CONSTRAINT$
+  Information: $INFORMATION$
+  </Information_for_Validation>
+
+  <assistant_response id="your-turn">
+  Chain-of-Thought:
+  Evaluation:
+  </assistant_response>
+OS_system: |
+  "You are an expert in evaluating the performance of a scene generator. Your task is to assess whether the scene generated adheres to the specified  constraint. Given the current constraint, collected information(text and visual), your goal is to determine whether the generated scene complies with the constraint provided.
+OS_human: |
+  ## Identity
+  You must determine whether the generated scene complies with the provided constraint. Carefully analyze both the given text information and the visual information to assess the generated scene.
+
+  ## Instructions
+  * You need to provide two assessments in evaluation: 1. Evaluation and 2. Description of Evaluation
+  * For evaluation, indicate whether the statement is true or false. 
+  * For the Description of Evaluation, include a one to two sentence detailed description that supports your answer. This description will be used for the next constraint assessment.    
+  * Do not assess the instruction itself. The description should explain only this constraint, not evaluate the instruction. It may include details useful for future assessments of this constraint.
+  * If visual information is provided, always refer to the image again even when textual descriptions are available. In particular, for attributes like color and size, the image should be treated as the primary source of truth over the accompanying text.
+  * Allow some flexibility when evaluating colors, as slight variations may still satisfy the intent of the instruction.
+  * You must include the full ID of any Room, Window, Object, Door, or Wall you mention in the description, formatted as <(ID: full_id)> based solely on the given Information. Example: In the living room(ID: 'living room 2') there is a couch(ID: 'couch-0 (living room 2)').
+  * Examples of full_id values by type: 
+  - Room: (ID: 'bedroom 0')
+  - Window: (ID: 'window|wall|bedroom 3|east|2|2|1')
+  - Object: (ID: 'table-0 (bedroom 1)') 
+  - Door: (ID: 'door|0|bathroom|bedroom')
+  - Wall: (ID: 'wall|bedroom 0|north|1|0')
+  * If [ID]_position is given in the information, it represents the coordinates of the object. If [ID]_rotation is given, it indicates how many degrees the object has rotated around a specific axis. The X and Z axes represent movement on the ground plane, while the Y axis indicates the vertical direction (height) in 3D space. Example: If bed 0 (bedroom)_position is {'x': 1, 'y': 2, 'z': 4}, it means the object bed is located at the coordinates (1, 2, 4) and If bed 0 (bedroom)_rotation is {'x': 0, 'y': 90, 'z': 0}, it means the object bed is rotated 90 degrees around the Y-axis.
+  * Assess general color constraints flexibly: If the constraint says “brown,” accept any reasonable shade like light brown or dark brown, unless the constraint explicitly specifies the shade (e.g., “light brown” or “dark brown”).
+  * Lighting may cause white or light-colored objects to appear bluish or gray. Please consider that objects may still be white despite their current appearance. Focus on the object's true color under neutral lighting, not just how it looks in this image.
+  * Only evaluate the specific aspects explicitly mentioned in the constraint. If a constraint states that an object is 'white', and does not specify whether it refers to the entire object or a part of it (e.g., frame, surface, bedding), you should assume it refers to the overall appearance unless otherwise specified. Do not evaluate parts that are not mentioned.
+  * Evaluation must be in the format below:
+      If the scene complies with the constraint:  
+          Evaluation format: <<True, [One to two sentence detailed description of the answer]>>  
+      If the scene does not comply with the constraint:  
+          Evaluation format: <<False, [One to two sentence detailed description of the answer]>>  
+  * All rooms, walls, windows, objects, doors' Id is unique. The assetId of windows, objects, doors can be the same.
+  * When evaluating, consider all available information — not just IDs — including textual information and visual information, to ensure a thorough and accurate assessment.
+  * Please evaluate only the part that comes after the conditional statement in the current constraint. The condition (e.g., "in the room with 3 dolls") has already been evaluated. Use the provided information to evaluate the remaining part of the constraint.$VISUAL_ADDITIONAL_INSTRUCTION$
+
+  ## Examples
+  <Information_for_Validation id="example-1">
+  Instruction: There are two bedrooms. In one of the bedrooms, all the walls are yellow. In the bedroom with yellow walls, there is a bed. The bed in that room is white. 
+  Current Constraint: The bed in the bedroom with yellow walls is white.
+  Information: {}
+  </Information_for_Validation>
+
+  <assistant_response id="example-1">
+  Chain-of-Thought: The bed in the image and the textual information appears bluish or grayish, but this is likely due to the white background and lighting, which can cause white surfaces to look slightly tinted in the image. Since the constraint simply states that the bed is white without specifying exact color values or components, I assess the overall appearance and identity of the bed. Based on the visual evidence, I determine that the bed is white. The ID of this white bed is 'favo bed', and I will mention that in the description.
+  Evaluation: <<True, In the bedroom with yellow walls(ID: 'john's bedroom'), there is a white bed(ID: 'favo bed (john's bedroom)').>>  
+  </assistant_response>
+
+  <Information_for_Validation id="example-2">
+  Instruction: There is a bedroom and a living room. In the bedroom, two walls are yellow and other two walls are red. There are windows in the bedroom, and they are only on the red walls. There are two cabinets in the living room. They should have different sizes. 
+  Current Constraint: The two cabinets in the living room should have different sizes. One should be larger than the other.
+  Information: {'dresser 0 (family's place)_id':'dresser 0 (family's place)', 'dresser 0 (family's place)_assetId': 'c4d8ddef54194882b776dd3b8d9', 'dresser 0 (family's place)_roomId': 'family's place', 'dresser 0 (family's place)_position': {'x': 0.595, 'y': 1, 'z': 0.285}, 'dresser 0 (family's place)_rotation':{'x': 0, 'y': 90, 'z': 0}, 'dresser 0 (family's place)_coordinates':[[105.0,0.0],[105.0,57.0],[14.0,57.0],[14.0,0.0]], 'dresser 1 (family's place)_id':'dresser 1 (family's place)', 'dresser 1 (family's place)_assetId': 'hed8ddef5419488bb776d3gg9da', 'dresser 1 (family's place)_roomId': 'family's place', 'dresser 1 (family's place)_position': {'x': 2.25, 'y': 1, 'z': 1.75}, 'dresser 1 (family's place)_rotation':{'x': 0, 'y': 90, 'z': 0}, 'dresser 1 (family's place)_coordinates':[[250.0,150.0],[250.0,200.0],[200.0,200.0],[200.0,150.0]]}
+  </Information_for_Validation>
+
+  <assistant_response id="example-2">
+  Chain-of-Thought: With the coordinates of objects from the information, I can calculate that the size of dressor 0 is 91x57 and the size of dressor 1 is 50x50. From the provided image, I can see that the bounding box of dresser 0 is larger than the bounding box of dressor 1. Using both textual and visual information, I can assure that the constraint is satisfied. The full Id of the cabinets are 'cabinet 0 (family's place)' and 'cabinet 1 (family's place)'. I have to mention the full Id of the cabinets in the description.
+  Evaluation: <<True, In the living room(ID: 'family's place'), one cabinet(ID: 'cabinet 0 (family's place)') is larger than the other cabinet(ID: 'cabinet 1 (family's place)').>>
+  </assistant_response>
+
+  <Information_for_Validation id="example-3">
+  Instruction: There are two rooms in the scene, and one of the rooms has a floor that is blue. There is a desk and a flower in that room, and the color of the desk is light brown. On that desk, there is a flower. The flower is white.
+  Current Constraint: In the room with blue floor, the flower on the light brown desk is white.
+  Information: {'summarized visual information of bouquet':'The flower is white(blue-gray, but actually white because the background is white.).'}
+  </Information_for_Validation>
+
+  <assistant_response id="example-3">
+  Chain-of-Thought: The summarized textual information of the flower says it's slightly grayish, but this is likely due to the influence of the white background and lighting, which can cause white objects to take on a grayish tint. The provided visual information states that the flower is actually white despite its appearance. Since the constraint only requires confirming that the flower is white and does not specify an exact shade or RGB value, I evaluate the color based on its intended identity rather than raw visual tone. Therefore, using both the image and text information, I determine that the constraint is satisfied.
+  Evaluation: <<True, The flower(ID: 'bouquet (room 1)') on the desk(ID: 'desk-0 (room 1)') is white.>>
+  </assistant_response>
+
+  <Information_for_Validation id="example-4">
+  Instruction: There are two rooms in the scene, and one of the rooms has a floor that is blue. There are two cabinets in the room with the blue floor. The two cabinets are blue, and identical. 
+  Current Constraint: The two cabinets in the room with blue floor are blue and identical. 
+  Information: {'cabinet-0_id':'cabinet-0', 'cabinet-0_assetId': 'c4d8ddef54194882b776dd3b8d9', 'cabinet-0_roomId': 'family's place', 'cabinet-0_position': {'x': 0.595, 'y': 1, 'z': 0.285}, 'cabinet-0_rotation':{'x': 0, 'y': 90, 'z': 0}, 'cabinet-0_coordinates':[[105.0,0.0],[105.0,50.0],[55.0,50.0],[55.0,0.0]], 'cabinet-1_id':'cabinet-1_id', 'cabinet-1_id_assetId': 'c4d8ddef54194882b776dd3b8d9', 'cabinet-1_id_roomId': 'family's place', 'cabinet-1_id_position': {'x': 2.25, 'y': 1, 'z': 1.75}, 'cabinet-1_id_rotation':{'x': 0, 'y': 90, 'z': 0}, 'cabinet-1_id_coordinates':[[250.0,150.0],[250.0,200.0],[200.0,200.0],[200.0,150.0]]}
+  </Information_for_Validation>
+
+  <assistant_response id="example-4">
+  Chain-of-Thought: Each summarized visual description refers to a different cabinet—cabinet-0 and cabinet-1. In both cases, the description states that the cabinet being viewed is blue, but the speaker does not have information about the other cabinet. This indicates that each description is limited to the cabinet currently visible to the speaker. Since both descriptions independently assert that their respective cabinet is blue, and the object IDs are different, I can conclude that both cabinets are blue, even though each speaker only sees one of them.
+  The constraint does not specify any particular part of the cabinet, so I will evaluate the cabinet as a whole. Unless otherwise stated, color-related constraints should refer to the overall appearance of the object, not specific components. While textual descriptions can be ambiguous, the provided images allow for precise verification of visual attributes such as color and size. In such cases, the image should serve as the primary source of truth.
+  Looking at the assetId of the objects in the Information, cabinet-0 and cabinet-1 have identical assetIds, meaning they are the same type. Their coordinates also show that both cabinets are 50x50 in size. Using both visual and textual information, I can confirm that the constraint is satisfied.
+
+  Evaluation: <<True, The two cabinets(IDs: 'cabinet-0 (my_room 1)', 'cabinet-1 (my_room 1)') are both blue and identical.>>
+  </assistant_response>
+
+  ## Output
+  <Information_for_Validation id="your-turn">
+  Instruction: $INSTRUCTION$
+  Current Constraint: $CURRENT_CONSTRAINT$
+  Information: $INFORMATION$
+  </Information_for_Validation>
+
+  <assistant_response id="example-3">
+  Chain-of-Thought:
+  Evaluation:
+  </assistant_response>
+OP_system: |
+  You are an expert in evaluating the performance of a scene generator. Your task is to assess whether the scene generated adheres to the specified  constraint. Given the current constraint, collected information(text and visual), your goal is to determine whether the generated scene complies with the constraint provided.
+OP_human: |
+  ## Identity
+  You must determine whether the generated scene complies with the provided constraint. Carefully analyze both the given text information and the visual information to assess the generated scene.
+
+  ## Instructions
+  * You need to provide two assessments in evaluation: 1. Evaluation and 2. Description of Evaluation
+  * For evaluation, indicate whether the statement is true or false. 
+  * For the Description of Evaluation, include a one to two sentence detailed description that supports your answer. This description will be used for the next constraint assessment.    
+  * Do not assess the instruction itself. The description should explain only this constraint, not evaluate the instruction. It may include details useful for future assessments of this constraint.
+  * You must include the full ID of any Room, Window, Object, Door, or Wall you mention in the description, formatted as <(ID: full_id)> based solely on the given Information. Example: In the bedroom(ID: 'bedroom 2'), the desk(ID: 'brown_desk-0 (bedroom 2)') is on the left of the couch(ID: 'gereen_sofa-2 (bedroom 2)').
+  * Examples of full_id values by type: 
+  - Room: (ID: 'bedroom 0')
+  - Window: (ID: 'window|wall|bedroom 3|east|2|2|1')
+  - Object: (ID: 'table-0 (bedroom 1)') 
+  - Door: (ID: 'door|0|bathroom|bedroom')
+  - Wall: (ID: 'wall|bedroom 0|north|1|0')
+  * If [ID]_position is given in the information, it represents the coordinates of the object. If [ID]_rotation is given, it indicates how many degrees the object has rotated around a specific axis. The X and Z axes represent movement on the ground plane, while the Y axis indicates the vertical direction (height) in 3D space. Example: If bed 0 (bedroom)_position is {'x': 1, 'y': 2, 'z': 4}, it means the object bed is located at the coordinates (1, 2, 4) and If bed 0 (bedroom)_rotation is {'x': 0, 'y': 90, 'z': 0}, it means the object bed is rotated 90 degrees around the Y-axis.
+  * Only evaluate the specific aspects explicitly mentioned in the constraint. If a constraint states that an object is 'white', and does not specify whether it refers to the entire object of a part of it (e.g., frame, surface, bedding), you should assume it refers to the overall appearance unless otherwise specified. Do not evaluate parts that are not mentioned.
+  * All rooms, walls, windows, objects, doors' Id is unique. The assetId of windows, objects, doors can be the same.
+  * Evaluation must be in the format below:
+      If the scene complies with the constraint:  
+          Evaluation format: <<True, [One to two sentence detailed description of the answer]>>  
+      If the scene does not comply with the constraint:  
+          Evaluation format: <<False, [One to two sentence detailed description of the answer]>>  
+  * When evaluating, consider all available information — not just IDs — including textual information and visual information, to ensure a thorough and accurate assessment.
+  * Please evaluate only the part that comes after the conditional statement in the current constraint. The condition (e.g., "in the room with 3 dolls") has already been evaluated. Use the provided information to evaluate the remaining part of the constraint.$VISUAL_ADDITIONAL_INSTRUCTION$
+
+  ## Examples
+  <Information_for_Validation id="example-1">
+  Instruction: There is a bedroom and a living room. In the bedroom, two walls are yellow and other two walls are red. There are windows in the bedroom, and they are only on the red walls. In the living room, there is a desk, cabinet, and bed. They are all brown. 
+  Current Constraint: In the living room, there is desk, cabinet, and bed.
+  Information: {'living room_object_list': ['sofa-0', 'study table-0', 'coffee table', 'tv set', 'plant-1', 'plant-2', 'cabinet-0 (living room)', 'cabinet-1 (living room)', 'b']}
+  </Information_for_Validation>
+
+  <assistant_response id="example-1">
+  Chain-of-Thought: Although the instruction contains more details, such as wall colors and object colors, those are not relevant to this evaluation and will be ignored. From the provided object list for the living room, I can identify two cabinets ('cabinet-0 (living room)' and 'cabinet-1 (living room)') and a desk ('study table-0'). There is also an item labeled 'b', which is not descriptive by name, but based on the visual evidence from the image named 'b_front_image', it clearly depicts a bed. Therefore, I interpret 'b' as the bed. Although the bed appears white in the image, color is not part of the current constraint. I only need to confirm whether these three object types exist in the room, not their appearance or arrangement. Thus, using the textual and visual information, I confirm that all three required objects are present in the living room. The full Id of the desk is 'study table-0', cabinets' full Ids are 'cabinet-0 (living room)' and 'cabinet-1 (living room)', and bed's Id is 'bed'. I have to mention this in the description.
+  Evaluation: <<True, There is desk(ID: 'study table-0 (living room)'), cabinet(IDs: 'cabinet-0 (living room)', 'cabinet-1 (living room)'), and bed(ID: 'bed').>>
+  </assistant_response>  
+
+  <Information_for_Validation id="example-2">
+  Instruction: There is a kitchen and a living room in the scene. The four walls of the kitchen is white. There is a fridge and a table in the kitchen. The fridge is placed on the left of the short side of the table, when facing the table. The fridge is blue.
+  Current Constraint: There is a fridge on the left of short side of the table in the kitchen, when facing the table.
+  Information: {'fridge_1_id':'fridge_1', 'fridge_1_assetId': 'c4d8ddef54194882b776dd3b8d9', 'fridge_1_roomId': 'family's place', 'fridge_1_position': {'x': 0.595, 'y': 1, 'z': 0.285}, 'fridge_1_rotation':{'x': 0, 'y': 180, 'z': 0}, 'fridge_1_coordinates':[[105.0,0.0],[105.0,57.0],[14.0,57.0],[14.0,0.0]], 'table in kitchen_id':'table in kitchen', 'table in kitchen_assetId': 'hed8ddef5419488bb776d3gg9da', 'table in kitchen_roomId': 'family's place', 'table in kitchen_position': {'x': 1.25, 'y': 1, 'z': 0.3}, 'table in kitchen_rotation':{'x': 0, 'y': 180, 'z': 0}, 'table in kitchen_coordinates':[[150.0,50.0],[150.0,10.0],[100.0,10.0],[100.0,50.0]]}
+  </Information_for_Validation>
+
+  <assistant_response id="example-2">
+  Chain-of-Thought: Thinking that the table's rotation is 180 degrees, it is facing north(0 degrees is facing south, 270 is facing west, 90 is facing east). So for the fridge to be on the left when facing the table, the x coordinates of the fridge should be smaller than the x coordinates of the table. I can check that the x coordinates of fridge is smaller than the x coordinates of the table by looking at the given information. Also, I can check that the fridge is placed on the left of the table by looking at the given image. The bounding box of the fridge is on the left of the table when looking at the image from the perspective of facing the table. The fridge is grey, but that is not relevant at the moment, as the current constraint only requires checking whether a fridge exists on the left of the table's short side. I will disregard the color and focus solely on its location. Using all textual and visual information, I can assure that the constraint is satisfied. The full Id of the fridge is 'fridge-2'. I have to mention this in the description.
+  Evaluation: <<True, The fridge(ID: 'fridge-2') in the kitchen(ID: 'kc') is on the left of the table(ID: 'table in kitchen'). >>
+  </assistant_response>
+
+  <Information_for_Validation id="example-3">
+  Instruction: There is one room. In the room, all walls are white. In the room, there is a desk, books, and cup. The desk is brown. The books and cup are on the desk. 
+  Current Constraint: There is a desk, books, and a cup in the room. 
+  Information: {'room_object_list':['bed-1', 'fishing rod', 'doll-4', 'nightstand-1 (room)', 'desk (room)']}
+  </Information_for_Validation>
+
+  <assistant_response id="example-3">
+  Chain-of-Thought: I can find the desk from the room_object_list, but not the cup and the books. However, when I look at the given images of the desk, I can see that there is a cup and books on the desk. The desk is blue, but that is not relevant at the moment, as the current constraint only requires checking whether a desk exists in the room. I will disregard the color and focus solely on its presence. Using the visual information, I can assure that the constraint is satisfied. The full Id of the desk is 'desk (room)'. I have to mention this in the description.
+  Evaluation: <<True, In the room(ID: 'room'), there is a desk, books, and a cup. The books and the cups are on the desk, and is a set with the desk(ID: 'desk (room)')>>
+  </assistant_response>
+
+  <Information_for_Validation id="example-4">
+  Instruction: There is a bedroom and a living room. In the bedroom, two walls are yellow and other two walls are red. There are windows in the bedroom, and they are only on the red walls. There are two cabinets in the living room. They should be facing each other.
+  Current Constraint: Two cabinets are in the living room.
+  Information: {'living room_object_list':['karaoke machine-1', 'sofa-1 (living room)', 'sofa-2 (living room)']}
+  </Information_for_Validation>
+
+  <assistant_response id="example-4">
+  Chain-of-Thought: I can't find any object that is or similar to the cabinet in the information provided. Also, the images provided does not contain any information of the cabinet. Using textual and visual information, I can assure that the constaint is not satisfied.
+  Evaluation: <<False, There are no cabinets in the living room(ID: 'living room').>>
+  </assistant_response>
+
+  ## Output
+  <Information_for_Validation id="your-turn">
+  Instruction: $INSTRUCTION$
+  Current Constraint: $CURRENT_CONSTRAINT$
+  Information: $INFORMATION$
+  </Information_for_Validation>
+
+  <assistant_response id="your-turn">
+  Chain-of-Thought:
+  Evaluation:
+  </assistant_response>

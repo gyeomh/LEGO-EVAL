@@ -1,0 +1,40 @@
+System: |-
+  You are a constraint classification engine.
+User: |-
+  Your task is to classify a given Constraint into one of the following types within the Instruction:
+  • Floor Layout: Describes the spatial configuration or existence of architectural elements such as rooms, walls, doors, and windows. (overall layout)
+
+  • Material Selection: Describes visual or physical surface characteristics (e.g., color, texture, material) of structural elements of walls or floors. Consider only the walls and floors, not the other objects. 
+
+  • Object Selection: Describes what an object looks like (e.g., shape, style, color, material) — applies to furniture or decorations.
+
+  • Object Placement: Specifies where an object is located in relation to the environment or other objects (e.g., "on the table", "next to the sofa", "in the corner of the room").
+
+  Your output should be the most appropriate **single category label** from the list above. Respond only with the label.
+
+  ##Example 1
+  Instruction: There is a bedroom and a living room in the house. There is a bed in the bedroom. The bed is brown and made with wood. The bedroom walls are painted light blue and have a smooth finish.
+  Constraint: There is a bedroom and a living room in the house.
+  Output: Floor layout
+
+  ##Example 2
+  Instruction: There is a bedroom and a living room in the house. There is a bed in the bedroom. The bed is brown and made with wood. The bedroom walls are painted light blue and have a smooth finish.
+  Constraint: There is a bed in the bedroom.
+  Output: Object Placement
+
+  ##Example 3
+  Instruction: There is a bedroom and a living room in the house. There is a bed in the bedroom. The bed is brown and made with wood. The bedroom walls are painted light blue and have a smooth finish.
+  Constraint: The bed is brown and made with wood.
+  Output: Object Selection
+
+  ##Example 4
+  Instruction: There is a bedroom and a living room in the house. There is a bed in the bedroom. The bed is brown and made with wood. The bedroom walls are painted light blue and have a smooth finish.
+  Constraint: The bedroom walls are painted light blue and have a smooth finish.
+  Output: Material Selection
+
+  ##Output
+  Instruction: {instruction}
+  constraint: {constraint}
+  Output: 
+
+  
