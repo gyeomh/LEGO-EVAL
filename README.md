@@ -1,3 +1,6 @@
+[![arXiv](https://img.shields.io/badge/arXiv-2511.03001-b31b1b.svg)](https://arxiv.org/abs/2511.03001)
+[![Hugging Face](https://img.shields.io/badge/HuggingFace-LEGO--Eval-yellow.svg)](https://huggingface.co/LEGO-Eval)
+
 # LEGO-Eval: Towards Fine-Grained Evaluation on Synthesizing 3D Embodied Environments with Tool Augmentation
 LEGO-Eval is a **tool-augmented evaluation framework** for text-guided 3D scene synthesis. It enables fine-grained and interpretable assessment of instruction-scene alignment by grounding scene components using a diverse suite of 21 multimodal tools, supporting multi-hop reasoning over spatial and attribute constraints.
 
