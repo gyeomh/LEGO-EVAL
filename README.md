@@ -1,12 +1,12 @@
 <h1 align="center">
-LEGO-Eval: Towards Fine-Grained Evaluation on Synthesizing 3D Embodied Environments with Tool Augmentation
+Apples on the Table? Evaluating Text-Guided 3D Scene Synthesis via Fine-Grained Constraint Verification
 </h1> 
 <h4 align="center">
+  <a href="https://k59118.github.io/minseok.github.io/">Minseok Kang*</a>,
+  <a href="https://dongwxxkchoi.github.io">Dongwook Choi*</a>,
   <a href="https://gyeomh.github.io">Gyeom Hwangbo*</a>,
-  <a href="https://hyungjoo-homepage.netlify.app">Hyungjoo Chae*</a>,
-  Minseok Kang,
-  Hyeonjong Ju,
-  Soohyun Oh,
+  Seungwon Lim,  
+  Kai Tzu-iunn Ong,
   <a href="https://jinyeo.weebly.com">Jinyoung Yeo</a>
 </h4>
 
@@ -26,8 +26,8 @@ LEGO-Eval is a **tool-augmented evaluation framework** for text-guided 3D scene 
 ## Overview
 Recently, there has been notable progress in text-guided 3D scene synthesis using large language models (LLMs). However, evaluating the alignment between textual instructions and the resulting 3D scenes remains a challenging problem, as existing approaches often lack a deep understanding of 3D spatial structures, limiting their reliability. To address this limitation, we introduce:
 
+- **LEGO**: A benchmark dataset that pairs each user description with human-annotated constraints and a reference scene
 - **LEGO-Eval**: An evaluation framework that uses diverse tools to explicitly ground scene elements and assess instruction-scene alignment.
-- **LEGO-Bench**: A benchmark for text-guided 3D scene synthesis, featuring fine-grained instructions that describe complex spatial layouts and object attributes in real-world scenes.
 
 ----
 
