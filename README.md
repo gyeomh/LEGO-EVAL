@@ -21,8 +21,6 @@ Apples on the Table? Evaluating Text-Guided 3D Scene Synthesis via Fine-Grained 
 
 LEGO-Eval is a **tool-augmented evaluation framework** for text-guided 3D scene synthesis. It enables fine-grained and interpretable assessment of instruction-scene alignment by grounding scene components using a diverse suite of 21 multimodal tools, supporting multi-hop reasoning over spatial and attribute constraints.
 
-![Framework Overview](etc/Overview.png)
-
 ## Overview
 Recently, there has been notable progress in text-guided 3D scene synthesis using large language models (LLMs). However, evaluating the alignment between textual instructions and the resulting 3D scenes remains a challenging problem, as existing approaches often lack a deep understanding of 3D spatial structures, limiting their reliability. To address this limitation, we introduce:
 
