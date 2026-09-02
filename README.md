@@ -154,10 +154,13 @@ bash scripts/run.sh
 
 ## Citation
 ```bibtex
-@article{hwangbo2025lego,
-  title={LEGO-Eval: Towards Fine-Grained Evaluation on Synthesizing 3D Embodied Environments with Tool Augmentation},
-  author={Hwangbo, Gyeom and Chae, Hyungjoo and Kang, Minseok and Ju, Hyeonjong and Oh, Soohyun and Yeo, Jinyoung},
-  journal={arXiv preprint arXiv:2511.03001},
-  year={2025}
+@misc{kang2026applestableevaluatingtextguided,
+      title={Apples on the Table? Evaluating Text-Guided 3D Scene Synthesis via Fine-Grained Constraint Verification}, 
+      author={Minseok Kang and Dongwook Choi and Gyeom Hwangbo and Seungwon Lim and Kai Tzu-iunn Ong and Jinyoung Yeo},
+      year={2026},
+      eprint={2511.03001},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2511.03001}, 
 }
 ```
