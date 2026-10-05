@@ -154,13 +154,11 @@ bash scripts/run.sh
 
 ## Citation
 ```bibtex
-@misc{kang2026applestableevaluatingtextguided,
-      title={Apples on the Table? Evaluating Text-Guided 3D Scene Synthesis via Fine-Grained Constraint Verification}, 
-      author={Minseok Kang and Dongwook Choi and Gyeom Hwangbo and Seungwon Lim and Kai Tzu-iunn Ong and Jinyoung Yeo},
-      year={2026},
-      eprint={2511.03001},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2511.03001}, 
+@article{kang2025apples,
+  title={Apples on the Table? Evaluating Text-Guided 3D Scene Synthesis via Fine-Grained Constraint Verification},
+  author={Kang, Minseok and Choi, Dongwook and Hwangbo, Gyeom and Lim, Seungwon and Tzu-iunn Ong, Kai and Yeo, Jinyoung},
+  journal={arXiv e-prints},
+  pages={arXiv--2511},
+  year={2025}
 }
 ```
